@@ -1,178 +1,130 @@
-# Customer_Segmentation_ML
+# Customer Segmentation Using K-Means (Machine Learning)
 
-This project performs **Customer Segmentation** using Machine Learning to group customers into meaningful clusters based on their behavior and attributes. It follows a complete ML workflow:
-
-**Problem Statement → Selection of Data → Collection of Data → EDA → Train/Test Split (if needed) → Model Selection → Evaluation Metrics**
-
-Note: Customer Segmentation is usually an **Unsupervised Learning** problem, so the main focus is clustering instead of prediction.
+This project performs **Customer Segmentation** using **K-Means clustering** to group customers into meaningful segments based on their **Age, Annual Income, and Spending Score**.
+It is a beginner-friendly, end-to-end clustering workflow focused on preprocessing, clustering, and visualization.
 
 ---
 
 ## Problem Statement
-Businesses have many customers with different spending patterns and preferences. Treating all customers the same reduces marketing performance.
 
-Goal:
-- Group customers into **clusters/segments**
-- Use these segments for targeted marketing, offers, and better customer understanding
+Customers behave differently in terms of spending and income. Treating all customers the same reduces marketing results.  
+The goal of this project is to:
+- Group customers into **clusters (segments)**
+- Use these segments to understand customer types (example: high income–high spending, low income–low spending, etc.)
 
-**Output:** Cluster label for each customer (Segment 0, 1, 2, ...)
+**Output:** Each customer gets a **Cluster label** (0, 1, 2, ...)
 
 ---
 
 ## Selection of Data
-**Dataset chosen:** Customer dataset (tabular data)
 
-**Why this dataset?**
-- Contains customer attributes that help identify patterns
-- Suitable for clustering and segmentation
-- Helps practice unsupervised ML workflow (EDA + preprocessing + clustering)
+**Dataset Type Used:** Tabular customer dataset (structured data)
+
+**Features used for clustering:**
+- `Age`
+- `Annual_Income(k$)`
+- `Spending_Score(1-100)`
+
+(Your dataset also contains `CustomerID`, which is used only as an identifier.)
 
 ---
 
 ## Collection of Data
-The dataset is loaded inside the notebook (`customersegmentaion.ipynb`) using Python libraries (commonly via `pandas.read_csv()`).
 
-Typical sources:
-- Kaggle dataset
-- CSV file stored locally or in Google Drive
-- Company/customer data sample dataset
+Data is created/loaded into a pandas DataFrame in the notebook using Python (`pandas`).  
+In your current code, the dataset is provided as a sample dictionary and converted into a DataFrame.
+
+---
+
+## EDA (Exploratory Data Analysis)
+
+Basic checks are done to understand the dataset before clustering:
+- Preview the dataset using `df.head()`
+- Confirm columns and values are loaded correctly
+
+This helps ensure the data is ready for clustering.
+
+---
+
+## Data Preprocessing
+
+Before clustering, the feature columns are standardized using **StandardScaler** because K-Means is distance-based.
+
+**Why scaling is important:**
+- Income values are much larger than age/spending score
+- Without scaling, K-Means will get biased toward large-number features
+
+Used in code:
+- `StandardScaler().fit_transform(X)`
+
+---
+
+## Dividing Training and Testing
+
+This is an **unsupervised learning** project, so a train/test split is not required here.  
+The model clusters the available customer records directly.
+
+---
+
+## Model Selection
+
+**Model used:** K-Means Clustering
+
+K-Means is chosen because:
+- It is simple and beginner-friendly
+- Works well for grouping similar customers into clear segments
+
+Used in code:
+- `KMeans(n_clusters=3, random_state=42, n_init=10)`
+
+---
+
+## Evaluation Matrix (Used in this Project)
+
+This project evaluates results mainly by **cluster assignment + visualization**:
+- Customers are assigned into clusters using `fit_predict()`
+- Clusters are visualized using a scatter plot (Income vs Spending Score) colored by cluster
 
 ---
 
 ## Main Libraries Used (and why)
 
 1. `pandas`  
-   - Load CSV data, clean it, handle DataFrame operations.
+   - Creates the dataset as a DataFrame and helps in viewing/handling tabular data (`pd.DataFrame`, `df.head()`).
 
-2. `numpy`  
-   - Numerical operations and transformations.
+2. `matplotlib.pyplot`  
+   - Used to visualize the clusters using a scatter plot (`plt.scatter`, `plt.xlabel`, `plt.title`, `plt.show`).
 
-3. `matplotlib.pyplot`  
-   - Basic visualizations for EDA and cluster plotting.
+3. `sklearn.preprocessing.StandardScaler`  
+   - Standardizes the feature values so K-Means is not biased toward larger numbers (`scaler.fit_transform(X)`).
 
-4. `seaborn`  
-   - Better statistical plots (distribution plots, correlation heatmap).
-
-5. `sklearn.preprocessing`  
-   Commonly used tools:
-   - `StandardScaler` (scaling features for clustering)
-   - `LabelEncoder` / `OneHotEncoder` (if categorical features exist)
-
-6. `sklearn.cluster`  
-   Common clustering algorithms:
-   - `KMeans` (most common for customer segmentation)
-   - `DBSCAN` (density-based clustering)
-   - `AgglomerativeClustering` (hierarchical clustering)
-
-7. `sklearn.metrics`  
-   Clustering evaluation methods:
-   - `silhouette_score`
-   - Inertia / Elbow method (for KMeans)
-
----
-
-## Overall Project Flow (Step-by-step)
-
-### 1) Import Libraries
-Import required libraries for:
-- Data loading + analysis
-- Visualization
-- Preprocessing (scaling/encoding)
-- Clustering model training
-- Evaluation
-
-### 2) Load the Dataset
-- Load customer dataset into a DataFrame
-- Inspect:
-  - shape
-  - column names
-  - data types
-  - missing values
-
-### 3) EDA (Exploratory Data Analysis)
-Goal: Understand customer behavior patterns.
-- Check missing values and duplicates
-- Explore distributions (income, spending, age, etc.)
-- Correlation check (optional)
-- Identify important features for clustering
-
-### 4) Data Preprocessing
-Before clustering, preprocessing is critical:
-- Handle missing values
-- Drop irrelevant columns (like CustomerID if it doesn't add value)
-- Encode categorical features (if present)
-- Scale numerical features using `StandardScaler`
-
-Why scaling?
-- Clustering uses distance calculations
-- Features must be in the same scale to avoid bias
-
-### 5) Feature Selection for Clustering
-Select meaningful columns such as:
-- Annual Income
-- Spending Score
-- Age
-- Purchase frequency (if available)
-
-### 6) Model Selection (Clustering)
-**Most common model:** KMeans Clustering
-
-Typical selection process:
-- Use **Elbow Method** to choose optimal number of clusters (K)
-- Train KMeans with selected K
-
-### 7) Training the Model
-- Fit the clustering model on processed features
-- Assign cluster labels to each customer
-
-### 8) Cluster Visualization
-- Visualize clusters using scatter plots
-- Color-code each cluster/segment to interpret patterns
-
-### 9) Evaluation Metrics (Evaluation Matrix)
-Since it is unsupervised learning, evaluation is different:
-
-1. **Elbow Method (Inertia)**
-- Helps decide the best number of clusters
-
-2. **Silhouette Score**
-- Measures how well points fit within their cluster
-- Higher silhouette score means better cluster separation
-
-3. **Cluster Profiling (Business View)**
-- Compare averages per cluster (income, spending, etc.)
-- Helps label clusters like:
-  - High income / high spending
-  - Low income / low spending
-  - Budget customers, premium customers, etc.
-
----
-
-## Model Used (Important)
-Update this line with your exact model from the notebook:
-- **Model:** KMeans Clustering (or DBSCAN / Hierarchical)
+4. `sklearn.cluster.KMeans`  
+   - Builds the clustering model and assigns each customer to a segment (`KMeans(...)`, `fit_predict`).
 
 ---
 
 ## How to Run Locally
 
-### Option 1: Run in Jupyter Notebook
-1. Download this repository
-2. Open `customersegmentaion.ipynb` in Jupyter Notebook / VS Code / Google Colab
-3. Run all cells from top to bottom
+### Option 1: Run in Jupyter / VS Code
+1. Open your notebook file
+2. Run cells from top to bottom
 
 ### Option 2: Run in Google Colab
-1. Upload `customersegmentaion.ipynb`
-2. Upload dataset file (if required)
-3. Run all cells
+1. Upload the notebook to Colab
+2. Run cells from top to bottom
 
 ---
+
+## Output
+
+- A new column `Cluster` is added to the dataset
+- A cluster plot is displayed:
+  - X-axis: Annual Income (k$)
+  - Y-axis: Spending Score (1-100)
+  - Color: Cluster label (segment)
+
+---
+
 ## Developer
+
 Grishma C.D
-
-
-
-
-
-
-
